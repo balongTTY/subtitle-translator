@@ -1,0 +1,30 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+
+# ---- 测试与缓存 ----
+.pytest_cache/
+.coverage
+htmlcov/
+tests/e2e/_tts_en.wav
+
+# ---- 构建产物 ----
+build/
+dist/
+*.spec.bak
+
+# ---- 编辑器 / IDE ----
+.idea/
+.vscode/
+*.swp
+*~
+
+# ---- 本地工具配置（含本机绝对路径，不应提交）----
+.claude/settings.local.json
+
+# ---- 日志 ----
+*.log

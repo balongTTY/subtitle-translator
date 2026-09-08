@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "subtitle-translator"
+version = "1.0.0"
+description = "基于 LLM 的 vtuber 直播字幕翻译工具（日/英 → 中文），支持 SRT/ASS/VTT 与语音识别提取"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "balongTTY" }]
+keywords = ["subtitle", "translation", "llm", "vtuber", "srt", "ass", "whisper"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: Chinese (Simplified)",
+    "Natural Language :: Japanese",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+# 运行依赖。requirements.txt 与本列表保持一致（供 pip install -r 使用）。
+dependencies = [
+    "pysubs2>=1.8.1",         # 字幕文件解析（SRT/ASS/VTT）
+    "openai>=2.0.0",          # OpenAI / DeepSeek / 自定义 API
+    "anthropic>=0.40.0",      # Claude API
+    "tiktoken>=0.7.0",        # Token 估算
+    "cryptography>=42.0.0",   # API 密钥加密（非 Windows 环境兜底）
+    "darkdetect>=0.8.0",      # 系统明暗主题检测
+    "PyQt5>=5.15.11",         # GUI 框架
+    "faster-whisper>=1.0.0",  # 字幕提取（语音识别）
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pyinstaller>=6.0"]
+
+[project.urls]
+Homepage = "https://github.com/balongTTY/subtitle-translator"
+Repository = "https://github.com/balongTTY/subtitle-translator"
+Issues = "https://github.com/balongTTY/subtitle-translator/issues"
+
+# ---------------------------------------------------------------------------
+#  工具配置
+# ---------------------------------------------------------------------------
+
+[tool.setuptools]
+# 桌面应用以源码方式运行（python main.py）或打包为 exe，不安装为库
+py-modules = ["main"]
+packages = ["config", "core", "gui", "services", "utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# tests/e2e 是脚本式端到端验证（会创建 QApplication / 调 sys.exit），
+# 不参与 pytest 收集；用 python tests/e2e/run_e2e.py 运行
+norecursedirs = ["tests/e2e"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+exclude = ["build", "dist", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = ["E501"]
