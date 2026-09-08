@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 单元测试 + 端到端验证
+    runs-on: windows-latest
+    env:
+      # 无显示环境：Qt 使用离屏平台，保证 GUI 相关测试可运行
+      QT_QPA_PLATFORM: offscreen
+      PYTHONIOENCODING: utf-8
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: 安装 Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: 单元测试（pytest）
+        run: pytest -v
+
+      - name: 端到端验证（fake LLM，不消耗 API 额度）
+        run: python tests/e2e/run_e2e.py
